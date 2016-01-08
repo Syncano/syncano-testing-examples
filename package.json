@@ -1,0 +1,16 @@
+{
+  "name": "nightwatch_blogpost",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "e2e-setup": "node selenium-download.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.4.0",
+    "nightwatch": "^0.8.15",
+    "selenium-download": "^2.0.0"
+  }
+}
