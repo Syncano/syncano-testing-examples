@@ -38,22 +38,21 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
 - Modify your package.json file by adding a `scripts` property with "e2e-setup": "node selenium-download.js”` line. The package.json should look more or less like this:
 ```javascript
 {
-	"name": “your-package-name",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-	  "test": "echo \"Error: no test specified\" && exit 1"
-},
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-	  "nightwatch": "^0.8.15",
-	  "selenium-download": "^2.0.0"
-},
-	"scripts": {
-	"e2e-setup": "node selenium-download.js"
-	}
+  "name": "syncano-test-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "e2e-setup": "node selenium-download.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^5.0.0",
+    "babel-loader": "5.3.3",
+    "nightwatch": "^0.8.15",
+    "selenium-download": "^2.0.0"
+  }
 }
 ```
 - Add a `bin` folder to your projects’ root directory
@@ -154,7 +153,7 @@ export default {
 This is a test that is checking if a user is able to log in to the application. As you can see the code is simple: 
 
 * User navigates to the log in page
-* User logs in using his credentials
+* User logs in using his credentials (I'm using node `process.env` method to get the environment variables we exported in the previous step)
 * The tests asserts that 'Your first instance.' text is visible on the page.
 * `client.end()` method ends the browser session
 
@@ -284,10 +283,10 @@ In this article you've learned how to:
 This just the beginning in terms of what can be achieved with Nightwatch. In the following posts I'll be showing you how to:
 
 * Use `before()` and `after()` hooks in your tests
-* Extend Nightwathc with custom commands
+* Extend Nightwatch with custom commands
 * Add your tests to continous integration tools like CircleCI
 * Use cool XPath selectors that will save you development time
 
-If you have any questions or just want to say hi drop me a line at support@syncano.com
+If you have any questions or just want to say hi, drop me a line at support@syncano.com
 
 
