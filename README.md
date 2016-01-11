@@ -38,7 +38,7 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
 - Modify your package.json file by adding a `scripts` property with "e2e-setup": "node selenium-download.js”` line. The package.json should look more or less like this:
 ```javascript
 {
-	"name": “your-package-name",
+	"name": "your-package-name",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
