@@ -1,5 +1,3 @@
-import Globals from '../globals';
-
 const loginCommands = {
   login(email, pass) {
     return this

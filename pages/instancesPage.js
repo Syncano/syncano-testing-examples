@@ -1,8 +1,8 @@
 export default {
-  url: 'https://localhost:8080/#/instances',
   elements: {
-    instancesTable: {
-      selector: 'div[id=instances]'
+    instancesListDescription: {
+      selector: '//div[@class="description-field col-flex-1"]',
+      locateStrategy: 'xpath'
     }
   }
 };
