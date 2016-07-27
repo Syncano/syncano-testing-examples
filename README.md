@@ -3,7 +3,7 @@
 ### Testing React apps with Nightwatch - before(), after() hooks and custom commands
 
 This is the second part of End to End testing of React apps with Nightwatch series.
-In the (previous post)[`https://www.syncano.io/blog/testing-syncano/`]
+In the (previous post)[https://www.syncano.io/blog/testing-syncano/]
 I've talked about Nightwatch:
 - installation
 - configuration of nightwatch.json and package.json files
@@ -17,9 +17,9 @@ I'll cover:
 
 
 This post builds upon the previous part of the series, which can be found here:
-(End to End testing of React apps with Nightwatch - Part 1)[`https://www.syncano.io/blog/testing-syncano/`]
+(End to End testing of React apps with Nightwatch - Part 1)[https://www.syncano.io/blog/testing-syncano/]
 You don't have to go through the first part but we'll be basing on the code
-that was written there. The code can be found in (syncano-testing-examples)[`https://github.com/Syncano/syncano-testing-examples/`]
+that was written there. The code can be found in (syncano-testing-examples)[https://github.com/Syncano/syncano-testing-examples/]
 on **part-one** branch. Finished code for this part of Nightwatch tutorial series
 can be found in **part-two** branch
 
