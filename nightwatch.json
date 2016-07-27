@@ -1,19 +1,19 @@
 {
   "src_folders": ["tests"],
   "output_folder": "reports",
-  "custom_commands_path": "",
+  "custom_commands_path": "commands",
   "custom_assertions_path": "",
   "page_objects_path": "pages",
-  "globals_path": "globals.js",
+  "globals_path": "./globals",
 
   "selenium": {
     "start_process": true,
-    "server_path": "./bin/selenium.jar",
+    "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.0-server.jar",
     "log_path": "./reports",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "./bin/chromedriver"
+      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.21-x64-chromedriver"
     }
   },
   "test_settings": {

@@ -1,138 +1,45 @@
 # Testing @ Syncano
 
-### End to End testing of React applications with Nightwatch part I
+### Testing React apps with Nightwatch - before(), after() hooks and custom commands
 
-#### Why we joined the dark side
-In the mid of 2015 our front-end team took the challenge of rebuilding the entire Dashboard from scratch. In a matter of three months we built a new version using the React library. Since it was hard to keep up with writing unit tests at such demanding pace we decided that end-to-end (e2e) will be our go-to test strategy.
+This is the second part of End to End testing of React apps with Nightwatch series.
+In the (previous post)[`https://www.syncano.io/blog/testing-syncano/`]
+I've talked about Nightwatch:
+- installation
+- configuration of nightwatch.json and package.json files
+- adding ECMAS 6 to Nightwatch
+- Writing the test in Page Object Pattern methodology
 
-The most obvious choice for e2e tests is Selenium but there are many language bindings and frameworks to choose from. Eventually we settled on Nightwatch.js for a number of reasons:
+In this part I'll focus on couple of tricks that'll let you write better tests.
+I'll cover:
+- Using `before()` and `after()` hooks in your tests
+- Extending Nightwatch with custom commands
 
-* It has built-in support for Page Object Pattern methodology
-* It’s written in Node.js so it nicely integrates with the front-end stack
-* It has built-in test runner. You can run your tests in parallel, sequentially, with different environments etc.
-* It was easy to integrate with CircleCI which we currently use as our continuous integration tool
-* It’s handling taking screenshots on errors and failures
 
-In this post I’ll show you how to setup a simple Nightwatch project with using the Page Object Pattern. The code to this tutorial is on [Github](https://github.com/Syncano/syncano-testing-examples) so you can grab the fully working example from there or follow the tutorial steps to make it from scratch.
+This post builds upon the previous part of the series, which can be found here:
+(End to End testing of React apps with Nightwatch - Part 1)[`https://www.syncano.io/blog/testing-syncano/`]
+You don't have to go through the first part but we'll be basing on the code
+that was written there. The code can be found in (syncano-testing-examples)[`https://github.com/Syncano/syncano-testing-examples/`]
+on **part-one** branch. Finished code for this part of Nightwatch tutorial series
+can be found in **part-two** branch
 
-#### Installation
-First thing you need to do is to install Node.js if you don’t yet have it. You can find the installation instructions on the Node.js project page. Once you have node installed, you can take advantage of it’s package manager called `npm`.
+Since we moved all the technicalities out of the way, we can get to the good
+bits. Lets start with the before() and after() hooks in Nightwatch.
 
-Go to your teminal, create an empty repository and cd into it. Next, type `npm init`. You can skip the steps of initialising `package.json` file by pressing enter several times and typing ‘yes’ at the end.
+#### Using before() and after() hooks in your tests
 
-Once you have a package.json file, while in the same direcotory, type `npm install nightwatch --save-dev`. This will install the latest version of nightwatch into the `node_modules` directory inside your project and save it in your `package.json` file as a developement dependency.
+`before()` and `after()` hooks are quite self descriptive. They let you write code,
+that'll get executed before or after your test suite (tests that are grouped in
+one file). Another useful variation are `beforeEach()` and `afterEach()` hooks.
+Pieces of code encapsulate in these will get executed before or after **each**
+test in a file. Ok, enough with the theory! Lets see those bad boys in action.
 
-Next, in order to be able to run the tests, we need to download the Selenium standalone server. We could do this manually and take it from the projects’ website but lets use npm to handle this:
+> It's also possible to use `before()` and `after()` hooks in a global context.
+> In this case they would execute code before and after whole suite is run.
+> These hooks should be defined in globals.js file
 
-- Type `npm install selenium-download --save-dev`
-- Create `selenium-download.js` file in the root directory of your project
-- Paste this code into the `selenium-download.js` file:
-```javascript
-	var selenium = require('selenium-download');
-	selenium.ensure('./bin', function(error) {
-	  if (error) {
-	    return callback(error);
-	}
-	});
-```
-- Modify your package.json file by adding a `scripts` property with "e2e-setup": "node selenium-download.js”` line. The package.json should look more or less like this:
-```javascript
-{
-  "name": "syncano-testing-examples",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "e2e-setup": "node selenium-download.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^5.0.0",
-    "babel-loader": "5.3.3",
-    "nightwatch": "^0.8.15",
-    "selenium-download": "^2.0.0"
-  }
-}
-
-```
-- Add a `bin` folder to your projects’ root directory
-
-Now running  `npm e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
-
-#### Configuration
-
-Nightwatch relies on `nightwatch.json` as the configuration file for the test runs. It should be placed in projects’ root directory. It specifies various configuration settings like test environments (browsers, resolutions), test file paths and selenium-specific settings. This is how the configuration file can look like:
-
-```javascript
-{
-  "src_folders": ["tests"],
-  "output_folder": "reports",
-  "custom_commands_path": "",
-  "custom_assertions_path": "",
-  "page_objects_path": "pages",
-  "globals_path": "globals.js",
-
-  "selenium": {
-    "start_process": true,
-    "server_path": "./bin/selenium.jar",
-    "log_path": "./reports",
-    "host": "127.0.0.1",
-    "port": 4444,
-    "cli_args": {
-      "webdriver.chrome.driver": "./bin/chromedriver"
-    }
-  },
-  "test_settings": {
-    "default": {
-      "launch_url": "https://dashboard.syncano.io",
-      "selenium_port": 4444,
-      "selenium_host": "localhost",
-      "silent": true,
-      "desiredCapabilities": {
-        "browserName": "chrome",
-        "javascriptEnabled": true,
-        "acceptSslCerts": true
-      }
-    }
-  }
-}
-```
-
-I'll go through the important parts of the `nightwatch.json` file:
-
-* `src_folders` - an array that contains the folders that your tests reside in
-* `output_folder` - folder where the test artifacts (XML reports, selenium log and screenshots) are being stored
-* `page_objects_path` - a folder where your Page Objects will be defined
-* `globals_path` - path to a file which stores global variables
-* `selenium` - selenium specific settings. In our case it's important to have the `start_process` set to `true` so that selenium server starts automatically. Also the `server_path` and `webdriver.chrome.driver` paths should have proper folder specified.
-
-`test_settings` is an object where you specify the test environments. The important bit in the `default` environment is the `desiredCapabilities` object where we specify the `chrome` as the `browserName` so that Nightwatch will run the test against it.
-
-#### Adding ECMAScript 6 to nightwatch
-
-We are writing the Syncano Dashboard according to the ECMAScript 6 specs and we wanted to do the same for Nightwatch. In order to be able to do that, you'll have to add a `nightwatch.conf.js` file to the root of your project. The file should contain these couple of lines:
-
-```javascript
-require('babel-core/register');
-
-module.exports = require('./nightwatch.json');
-```
-Bang! You can now write your tests in ECMAS 6
-
-#### The Tests
-
-Before we get to the test code there are only two things left to do:
-
-* Go to [Syncano Dashboard]("https://dashboard.syncano.io/#/signup") and sign up to our service (if you suspect that this article is an elaborate plot to make you sign up, then you are right)
-* Go to your terminal and paste these two lines (where "your_email" and "your_password" will be the credentails that you just used when signing up):
-	* `export EMAIL="your_email"`
-	* `export PASSWORD="your_password"`
-
-(If you are on a windows machine than the command will be `SET` instead of `export`)
-
-##### Test if a user can log in to the application
-In the root of your project create a `tests` directory. Create a testLogin.js file and paste there this code: 
+Remember the login test we've written in the previous part (it's in `tests/testLogin.js`
+	file)? It looked like this:
 
 ```javascript
 export default {
@@ -142,7 +49,7 @@ export default {
 
     loginPage
       .navigate()
-      .login(process.env.EMAIL, process.env.PASSWORD);
+      .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
 
     instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.');
 
@@ -151,143 +58,216 @@ export default {
 };
 ```
 
-This is a test that is checking if a user is able to log in to the application. As you can see the code is simple: 
+That's very nice. But what if I wanted to:
+- Have couple of tests grouped in a single file (they are executed sequentially)
+- The browser to open before all tests from this file and closed after
+they are finished
+- Login should be performed before all the tests
 
-* User navigates to the log in page
-* User logs in using his credentials (I'm using node `process.env` method to get the environment variables we exported in the previous step)
-* The tests asserts that 'Your first instance.' text is visible on the page.
-* `client.end()` method ends the browser session
-
-The way to achieve this sort of clarity within a test, where the business logic is presented clearly and test can be easily understood even by non tech-saavy people is by introducing the Page Object pattern. `loginPage` and `instancesPage` objects contain all the methods and ui elements that are needed to make interactions within that page. 
-
-##### Log in Page Object
-Page Objects files should be created in a `pages` folder. Create one in the root of your project. Next, create a `loginPage.js` file that will contain this code:
+This is where the hooks come in. Thanks to `before()` and `after()` I can extract
+parts of the logic out of the tests and make them more robust. Lets consider a
+case, where I'd want a user to login and then view his Instance details. This is
+how I'd structure such test:
 
 ```javascript
-const loginCommands = {
-  login(email, pass) {
-    return this
-      .waitForElementVisible('@emailInput')
-      .setValue('@emailInput', email)
-      .setValue('@passInput', pass)
-      .waitForElementVisible('@loginButton')
-      .click('@loginButton')
-  }
-};
 
 export default {
-  url: 'https://dashboard.syncano.io/#/login',
-  commands: [loginCommands],
-  elements: {
-    emailInput: {
-      selector: 'input[type=text]'
-    },
-    passInput: {
-      selector: 'input[name=password]'
-    },
-    loginButton: {
-      selector: 'button[type=submit]'
-    }
+  before(client) {
+    const loginPage = client.page.loginPage();
+		const instancesPage = client.page.instancesPage();
+
+    loginPage
+      .navigate()
+			.login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+
+		instancesPage.waitForElementPresent('@instancesTable');
+  },
+  after(client) {
+    client.end();
+  },
+  'User goes to Instance details  view': (client) => {
+		const instancesPage = client.page.instancesPage();
+		const socketsPage = client.page.socketsPage();
+
+		instancesPage
+      .navigate()
+      .click('@instancesTableName')
+
+		socketsPage.waitForElementPresent('instancesDropdown');
   }
 };
 ```
-
-The file contains an object loginCommands that stores a `login` method. The `login` method waits for an email input element to be visible, sets the values of email and password fields, waits for login button to be visible and finally clicks the button. We actually could write these steps in the "User Logs in" test. If we are planning to create a bigger test suite though then it makes sesnse to encapsulate that logic into a single method that can be reused in multiple test scenarios.
-
-Apart from the `loginCommands` there's a second object defined below which is  actually the Page Object that we instantiate in the `testLogin.js` file with this line:
-
-`const loginPage = client.page.loginPage();`
-
-as you can see the Page Object contains:
-
-* the pages url (when `navigate()` method in the test is called it uses this url as a parameter)
-* `commands` property where we pass the `loginCommands` object defined above, so that the `login` method can be used within this page's context
-* `elements` property where the actual selectors for making interactions with the web page are stored
-
-As you've probably noticed there's an `@` prefix used before the locators both inside the test and in the loginCommands object. This tells Nightwatch that it should refer to the key declared in the `elements` property inside the Page Object.
-
-##### Instances Page Object
-
-Now let's create a second file in the pages folder that will be named `instancesPage.js`. It should contain the following code:
-
+So now the `before()` hook will take care of login steps and `after()` will close
+the browser when all tests from this file are done. Simple, right? The only thing
+I need to do now is fill in the missing selectors. I'll add `@instancesTable` selector to the
+instancesPage, so that it looks like this:
 ```javascript
 export default {
   elements: {
     instancesListDescription: {
       selector: '//div[@class="description-field col-flex-1"]',
       locateStrategy: 'xpath'
+    },
+    instancesTable: {
+      selector: 'div[id=instances]'
     }
+  }
+};
+
+```
+
+Since it's a css selector, I don't have to pass the `locateStrategy` property
+in the instancesTable object because nightwatch is using css as a default
+locator strategy.
+
+I'll also need to add `socketsPage.js` file in the `pages` folder and add these
+lines:
+
+instancesPage:
+```javascript
+export default {
+  elements: {
+    instancesDropdown: {
+      selector: '.instances-dropdown'
+    }
+};
+```
+
+That's it! The only thing you need to do now, is to export your email and password
+(if you haven't done so) as an environment variables. Open your terminal app
+and type these lines:
+
+```sh
+export $NIGHTWATCH_EMAIL=YOUR_SYNCANO_EMAIL
+export $NIGHTWATCH_PASSWORD=YOUR_SYNCANO_PASSWORD
+```
+
+> If you don't want to use environment variables, you can pass your email
+> and password as strings directly to loginPage.login() method
+
+### Extending nightwatch with custom commands
+
+Once your test suite gets bigger, you'll notice that there are steps within your
+tests that could be abstracted away and reused across your project. This is where
+custom commands come in. Thanks to this feature you'll be able to define methods
+that are accessible from anywhere within a test suite.
+
+First thing we need to do, is add a folder for the custom commands. You can add
+it in the root of the project and name it `commands`. Once it's done, you'll have
+to tell nightwatch where the custom commands are. To do this:
+- open `nightwatch.json` file
+- edit the code in line 4 to look like this:
+```javascript
+"custom_commands_path": "./commands",
+```
+Now nightwatch will know where to look for the commands.
+
+Since there are a lot of dropdowns in the Syncano Dashboard, it makes sense to
+abstract the logic around them into a custom command. The command will:
+- wait for the dropdown element to be visible
+- click the dropdown
+- wait for the dropdown animation to finish (this helps with the test stability)
+- click the dropdown option
+- wait for the dropdown to be removed from the DOM
+
+In order to create this command:
+- add `clickListItemDropdown.js` file in the commands folder
+- paste this code in the `clickListItemDropdown.js` file:
+```javascript
+// 'listItem' is the item name from the list. Corresponding dropdown menu will be clicked  
+// 'dropdoownChoice' can be part of the name of the dropdown option like "Edit" or "Delete"
+
+exports.command = function clickListItemDropdown(listItem, dropdownChoice) {
+  const listItemDropdown =
+	`//div[text()="${listItem}"]/../../../following-sibling::div//span[@class="synicon-dots-vertical"]`;
+  const choice = `//div[contains(text(), "${dropdownChoice}")]`;
+
+  return this
+    .useXpath()
+    .waitForElementVisible(listItemDropdown)
+    .click(listItemDropdown)
+    // Waiting for the dropdown click animation to finish
+    .waitForElementNotPresent('//span[@class="synicon-dots-vertical"]/preceding-sibling::span/div')
+    .click(choice)
+    // Waiting for dropdown to be removed from DOM
+    .waitForElementNotPresent('//iframe/following-sibling::div[@style]/div');
+};
+```
+
+Now, since we have the command ready we will want to use it in a test. Create a
+`testInstances.js` file in the `tests` folder. We will use the `before()` and
+`after()` hooks from the first part of this post. The draft for this test will
+look like this:
+
+```javascript
+
+export default {
+  before(client) {
+    const loginPage = client.page.loginPage();
+		const instancesPage = client.page.instancesPage();
+
+    loginPage
+      .navigate()
+			.login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+
+		instancesPage.waitForElementPresent('@instancesTable');
+  },
+  after(client) {
+    client.end();
+  },
+  'User clicks Edit Instance dropdown option': (client) => {
+		const instancesPage = client.page.instancesPage();
+		const socketsPage = client.page.socketsPage();
+		const instanceName = client.globals.instanceName;
+
+		instancesPage
+      .clickListItemDropdown(instanceName, 'Edit')
+			.waitForElementPresent('@instanceDialogEditTitle')
+			.waitForElementPresent('@instanceDialogCancelButton')
+			.click('@instanceDialogCancelButton')
+			.waitForElementPresent('@instancesTable')
   }
 };
 ```
 
-It's a lot simpler than the loginPage file since it only has a single `instancesListDescription` element. What is interesting about this element is that it's not a CSS selector as the elements in the loginPage.js file but an XPath selector. You can use XPath selectors by adding a `locateStrategy: xpath` property to the desired element.
+The test will:
+- log in the user in the `before()` step
+- Click the Instance dropdown
+- Click 'Edit' option from the dropdown
+- Wait for the Dialog window to show up
+- Click 'Cancel' button
+- Wait for the Instances list to show up
 
-The `instancesListDescription` element is used in the 11 line of the loginPage.js file to assert if a text is present on a page. 
-
-```javascript
-    instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.');
-```
-As you can see the assertion is verbose and readable because Nightwatch relies on [Chai Expect](http://chaijs.com/api/bdd/) library which allows for use of these BDD-style assertions.
-
-##### Global configuration
-
-There's one last piece of the puzzle missing in order to be able to run the tests. Nightwatch commands like `waitForElementVisible()` or the assetions require the timeout parameter to be passed along the element, so that the test throws an error when that timout limit is reached. So normally the `waitForElementVisible()` method would look like this:
-
-`waitForElementVisible('@anElement', 3000)`
-
-similarly the assertion would also have to have the timeout specified:
-
-`instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.').after(3000);`
-
-Where `3000` is the amount of miliseconds after which the test throws an `element not visible` exception. Fortunately we can move that value outside the test so that the code is cleaner. In order to do that create a globals.js file in the root of your project and paste there this code:
+What we still need to do is to add the missing selectors in the `pages/instancesPage.js`
+file. Copy the code and paste it below the existing selectors (remember about adding
+	comma after the last one already present):
 
 ```javascript
-export default {
-  waitForConditionTimeout: 10000,
-};
+instanceDialogEditTitle: {
+	selector: '//h3[text()="Update an Instance"]',
+	locateStrategy: 'xpath'
+},
+instanceDialogCancelButton: {
+	selector: '//button//span[text()="Cancel"]',
+	locateStrategy: 'xpath'
+}
 ```
 
-Now all the Nightwatch methods that require a timeout will have this global 10 second timeout specified as default. You can still define a special timeout for single calls if needed.
+We are also using a global variable within a test. Go to `globals.js` file and
+add a new line:
 
-##### Running the test
-
-That's it! The only thing left to do is to run the test. In the terminal, go to your projects' root directory (where the nightwatch.json file is in) and run this command: 
-
-`nightwatch`
-
-With a bit of luck you should see a console output similar to this one:
-
+```javascript
+instanceName: INSTANCE_NAME
 ```
-Starting selenium server... started - PID:  13085
+where the INSTANCE_NAME would be the name of your Syncano instance.
 
-[Test Login] Test Suite
-=======================
-
-Running:  User Logs in
- ✔ Element <input[type=text]> was visible after 87 milliseconds.
- ✔ Element <button[type=submit]> was visible after 43 milliseconds.
- ✔ Expected element <//div[@class="description-field col-flex-1"]> text to contain: "Your first instance." - condition was met in 2474ms
-
-OK. 3 assertions passed. (10.437s)
+Now, since everything is ready, you can run your tests. We want to run only a
+single test, so we'll run the suite like this:
+```sh
+nightwatch -t tests/testInstances.js
 ```
 
-Well done! You've run your first Nightwatch test.
-
-### Summary
-In this article you've learned how to:
-
-* Install and configure Nightwatch.js and it's dependencies
-* Create an end to end test in the Page Object Pattern methodology
-* Use the globals.js file
-
-This just the beginning in terms of what can be achieved with Nightwatch. In the following posts I'll be showing you how to:
-
-* Use `before()` and `after()` hooks in your tests
-* Extend Nightwatch with custom commands
-* Add your tests to continous integration tools like CircleCI
-* Use cool XPath selectors that will save you development time
+That's it for the second part of "Testing React apps with Nightwatch" series. In
+the next part I'll talk about xpath selectors and continuous integration setup.
 
 If you have any questions or just want to say hi, drop me a line at support@syncano.com
-
-
