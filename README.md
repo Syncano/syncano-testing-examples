@@ -18,9 +18,9 @@ In this post I’ll show you how to setup a simple Nightwatch project with using
 #### Installation
 First thing you need to do is to install Node.js if you don’t yet have it. You can find the installation instructions on the Node.js project page. Once you have node installed, you can take advantage of it’s package manager called `npm`.
 
-Go to your teminal, create an empty repository and cd into it. Next, type `npm init`. You can skip the steps of initialising `package.json` file by pressing enter several times and typing ‘yes’ at the end.
+Go to your terminal, create an empty repository and cd into it. Next, type `npm init`. You can skip the steps of initialising `package.json` file by pressing enter several times and typing ‘yes’ at the end.
 
-Once you have a package.json file, while in the same direcotory, type `npm install nightwatch --save-dev`. This will install the latest version of nightwatch into the `node_modules` directory inside your project and save it in your `package.json` file as a developement dependency.
+Once you have a package.json file, while in the same directory, type `npm install nightwatch --save-dev`. This will install the latest version of nightwatch into the `node_modules` directory inside your project and save it in your `package.json` file as a development dependency.
 
 Next, in order to be able to run the tests, we need to download the Selenium standalone server. We could do this manually and take it from the projects’ website but lets use npm to handle this:
 
@@ -35,7 +35,7 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
 	}
 	});
 ```
-- Modify your package.json file by adding a `scripts` property with "e2e-setup": "node selenium-download.js”` line. The package.json should look more or less like this:
+- Modify your package.json file by adding a `scripts` property with `"e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"”` line. The package.json should look more or less like this:
 ```javascript
 {
   "name": "syncano-testing-examples",
@@ -43,26 +43,28 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2e-setup": "node selenium-download.js"
+    "e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^5.0.0",
-    "babel-loader": "5.3.3",
-    "nightwatch": "^0.8.15",
-    "selenium-download": "^2.0.0"
+	"devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.11.4",
+    "babel-loader": "6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.9.0",
+    "nightwatch": "^0.9.5",
+    "selenium-standalone": "5.1.1"
   }
 }
 
 ```
-- Add a `bin` folder to your projects’ root directory
 
 Now running  `npm e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
 
 #### Configuration
 
-Nightwatch relies on `nightwatch.json` as the configuration file for the test runs. It should be placed in projects’ root directory. It specifies various configuration settings like test environments (browsers, resolutions), test file paths and selenium-specific settings. This is how the configuration file can look like:
+Nightwatch relies on `nightwatch.json` as the configuration file for the test runs. It should be placed in projects root directory. It specifies various configuration settings like test environments (browsers, resolutions), test file paths and selenium-specific settings. This is how the configuration file can look like:
 
 ```javascript
 {
@@ -71,16 +73,16 @@ Nightwatch relies on `nightwatch.json` as the configuration file for the test ru
   "custom_commands_path": "",
   "custom_assertions_path": "",
   "page_objects_path": "pages",
-  "globals_path": "globals.js",
+  "globals_path": "globals",
 
   "selenium": {
     "start_process": true,
-    "server_path": "./bin/selenium.jar",
+    "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.0-server.jar",
     "log_path": "./reports",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "./bin/chromedriver"
+      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.21-x64-chromedriver"
     }
   },
   "test_settings": {
@@ -120,19 +122,25 @@ module.exports = require('./nightwatch.json');
 ```
 Bang! You can now write your tests in ECMAS 6
 
+> Edit: things have changed since I've written this article. Now you'll need to
+> add es2015 preset in .babelrc config file and add `add-module-exports` plugin
+> and do `npm i babel-plugin-add-module-exports babel-preset-es2015 --save-dev`.
+> Everything should work after that. See the syncano-testing-examples repo for
+> details
+
 #### The Tests
 
 Before we get to the test code there are only two things left to do:
 
 * Go to [Syncano Dashboard]("https://dashboard.syncano.io/#/signup") and sign up to our service (if you suspect that this article is an elaborate plot to make you sign up, then you are right)
-* Go to your terminal and paste these two lines (where "your_email" and "your_password" will be the credentails that you just used when signing up):
+* Go to your terminal and paste these two lines (where "your_email" and "your_password" will be the credentials that you just used when signing up):
 	* `export EMAIL="your_email"`
 	* `export PASSWORD="your_password"`
 
 (If you are on a windows machine than the command will be `SET` instead of `export`)
 
 ##### Test if a user can log in to the application
-In the root of your project create a `tests` directory. Create a testLogin.js file and paste there this code: 
+In the root of your project create a `tests` directory. Create a testLogin.js file and paste there this code:
 
 ```javascript
 export default {
@@ -151,14 +159,14 @@ export default {
 };
 ```
 
-This is a test that is checking if a user is able to log in to the application. As you can see the code is simple: 
+This is a test that is checking if a user is able to log in to the application. As you can see the code is simple:
 
 * User navigates to the log in page
 * User logs in using his credentials (I'm using node `process.env` method to get the environment variables we exported in the previous step)
 * The tests asserts that 'Your first instance.' text is visible on the page.
 * `client.end()` method ends the browser session
 
-The way to achieve this sort of clarity within a test, where the business logic is presented clearly and test can be easily understood even by non tech-saavy people is by introducing the Page Object pattern. `loginPage` and `instancesPage` objects contain all the methods and ui elements that are needed to make interactions within that page. 
+The way to achieve this sort of clarity within a test, where the business logic is presented clearly and test can be easily understood even by non tech-saavy people is by introducing the Page Object pattern. `loginPage` and `instancesPage` objects contain all the methods and ui elements that are needed to make interactions within that page.
 
 ##### Log in Page Object
 Page Objects files should be created in a `pages` folder. Create one in the root of your project. Next, create a `loginPage.js` file that will contain this code:
@@ -192,7 +200,7 @@ export default {
 };
 ```
 
-The file contains an object loginCommands that stores a `login` method. The `login` method waits for an email input element to be visible, sets the values of email and password fields, waits for login button to be visible and finally clicks the button. We actually could write these steps in the "User Logs in" test. If we are planning to create a bigger test suite though then it makes sesnse to encapsulate that logic into a single method that can be reused in multiple test scenarios.
+The file contains an object loginCommands that stores a `login` method. The `login` method waits for an email input element to be visible, sets the values of email and password fields, waits for login button to be visible and finally clicks the button. We actually could write these steps in the "User Logs in" test. If we are planning to create a bigger test suite though then it makes sense to encapsulate that logic into a single method that can be reused in multiple test scenarios.
 
 Apart from the `loginCommands` there's a second object defined below which is  actually the Page Object that we instantiate in the `testLogin.js` file with this line:
 
@@ -223,24 +231,24 @@ export default {
 
 It's a lot simpler than the loginPage file since it only has a single `instancesListDescription` element. What is interesting about this element is that it's not a CSS selector as the elements in the loginPage.js file but an XPath selector. You can use XPath selectors by adding a `locateStrategy: xpath` property to the desired element.
 
-The `instancesListDescription` element is used in the 11 line of the loginPage.js file to assert if a text is present on a page. 
+The `instancesListDescription` element is used in the 11 line of the loginPage.js file to assert if a login was successful.
 
 ```javascript
-    instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.');
+    instancesPage.expect.element('@instancesListDescription').to.be.visible;
 ```
 As you can see the assertion is verbose and readable because Nightwatch relies on [Chai Expect](http://chaijs.com/api/bdd/) library which allows for use of these BDD-style assertions.
 
 ##### Global configuration
 
-There's one last piece of the puzzle missing in order to be able to run the tests. Nightwatch commands like `waitForElementVisible()` or the assetions require the timeout parameter to be passed along the element, so that the test throws an error when that timout limit is reached. So normally the `waitForElementVisible()` method would look like this:
+There's one last piece of the puzzle missing in order to be able to run the tests. Nightwatch commands like `waitForElementVisible()` or the assertions require the timeout parameter to be passed along the element, so that the test throws an error when that timeout limit is reached. So normally the `waitForElementVisible()` method would look like this:
 
 `waitForElementVisible('@anElement', 3000)`
 
 similarly the assertion would also have to have the timeout specified:
 
-`instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.').after(3000);`
+`instancesPage.expect.element('@instancesListDescription').to.be.visible.after(3000);`
 
-Where `3000` is the amount of miliseconds after which the test throws an `element not visible` exception. Fortunately we can move that value outside the test so that the code is cleaner. In order to do that create a globals.js file in the root of your project and paste there this code:
+Where `3000` is the amount of milliseconds after which the test throws an `element not visible` exception. Fortunately we can move that value outside the test so that the code is cleaner. In order to do that create a globals.js file in the root of your project and paste there this code:
 
 ```javascript
 export default {
@@ -252,7 +260,7 @@ Now all the Nightwatch methods that require a timeout will have this global 10 s
 
 ##### Running the test
 
-That's it! The only thing left to do is to run the test. In the terminal, go to your projects' root directory (where the nightwatch.json file is in) and run this command: 
+That's it! The only thing left to do is to run the test. In the terminal, go to your projects' root directory (where the nightwatch.json file is in) and run this command:
 
 `nightwatch`
 
@@ -285,9 +293,7 @@ This just the beginning in terms of what can be achieved with Nightwatch. In the
 
 * Use `before()` and `after()` hooks in your tests
 * Extend Nightwatch with custom commands
-* Add your tests to continous integration tools like CircleCI
+* Add your tests to continuous integration tools like CircleCI
 * Use cool XPath selectors that will save you development time
 
 If you have any questions or just want to say hi, drop me a line at support@syncano.com
-
-
