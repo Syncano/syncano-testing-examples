@@ -24,17 +24,7 @@ Once you have a package.json file, while in the same directory, type `npm instal
 
 Next, in order to be able to run the tests, we need to download the Selenium standalone server. We could do this manually and take it from the projects’ website but lets use npm to handle this:
 
-- Type `npm install selenium-download --save-dev`
-- Create `selenium-download.js` file in the root directory of your project
-- Paste this code into the `selenium-download.js` file:
-```javascript
-	var selenium = require('selenium-download');
-	selenium.ensure('./bin', function(error) {
-	  if (error) {
-	    return callback(error);
-	}
-	});
-```
+- Type `npm install selenium-standalone --save-dev`
 - Modify your package.json file by adding a `scripts` property with `"e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"”` line. The package.json should look more or less like this:
 ```javascript
 {
@@ -60,7 +50,7 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
 
 ```
 
-Now running  `npm e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
+Now running `npm e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
 
 #### Configuration
 
