@@ -13,7 +13,7 @@ The most obvious choice for e2e tests is Selenium but there are many language bi
 * It was easy to integrate with CircleCI which we currently use as our continuous integration tool
 * It’s handling taking screenshots on errors and failures
 
-In this post I’ll show you how to setup a simple Nightwatch project with using the Page Object Pattern. The code to this tutorial is on [Github](https://github.com/Syncano/syncano-testing-examples) so you can grab the fully working example from there or follow the tutorial steps to make it from scratch.
+In this post I’ll show you how to setup a simple Nightwatch project with using the Page Object Pattern. The finished code for this tutorial is on [Github](https://github.com/Syncano/syncano-testing-examples) so you can grab the fully working example from there or follow the tutorial steps to make it from scratch.
 
 #### Installation
 First thing you need to do is to install Node.js if you don’t yet have it. You can find the installation instructions on the Node.js project page. Once you have node installed, you can take advantage of it’s package manager called `npm`.
