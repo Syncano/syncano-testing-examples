@@ -6,6 +6,7 @@ const loginCommands = {
       .setValue('@passInput', pass)
       .waitForElementVisible('@loginButton')
       .click('@loginButton')
+      .pause(1000);
   }
 };
 
