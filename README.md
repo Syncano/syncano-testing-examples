@@ -1,4 +1,4 @@
-### Testing React apps with Nightwatch - javascript tool for data driven testing
+### Testing React apps with Nightwatch - Data Driven Testing @ Syncano
 
 This is the third part of End to End testing of React apps with Nightwatch series.
 In the [previous posts](https://www.syncano.io/blog/testing-syncano/) We've talked about Nightwatch:
@@ -6,11 +6,11 @@ In the [previous posts](https://www.syncano.io/blog/testing-syncano/) We've talk
 - Using `before()` and `after()` hooks in your tests
 - Extending Nightwatch with custom commands
 
-In this part I'll focus on script that let us feed dashboard with data, and then use it in example e2e test.
+In this part I'll focus on a script that let us feed dashboard with data, and then use it in example e2e test.
 I'll cover:
 
 - Creating javascript tool for data driven testing
-- Using javascript tool with nightwatch tests
+- Using this tool with Nightwatch tests
 
 
 This post builds upon the previous part of the series, which can be found here [End to End testing of React apps with Nightwatch - Part 2](https://www.syncano.io/blog/testing-syncano/)
@@ -19,13 +19,13 @@ Finished code for this part of Nightwatch tutorial series can be found in **part
 
 #### Creating javascript tool for data driven testing
 
-As mentioned in our title we are going to create tool for data driven testing.
+As mentioned in the title, in this part I'm going to show you how to create a tool for data driven testing.
 What is data driven testing? Let's check `wikipedia` for it.
 
 > Data-driven testing is the creation of test scripts to run together with their related data sets in a framework. The framework provides re-usable test logic to reduce maintenance and improve test coverage. Input and result (test criteria) data values can be stored in one or more central data sources or databases, the actual format and organisation can be implementation specific.
 
-Yes this is what we will try to achieve, but in a simple matter.
-Before we start we will need to modify `package.json` a bit by adding `syncano` dependencies.
+In general, this is exactly what we'll try to achieve.
+Before we start we'll need to modify `package.json` a bit by adding `syncano` as a dependency.
 
 ```javascript
 [...]
@@ -35,22 +35,22 @@ Before we start we will need to modify `package.json` a bit by adding `syncano` 
 }
 ```
 
-This will let us use `syncano` package to connect to dashboard, create test instance, and feed it with data.
-As we use API in Syncano for all operation and we have javascript libraries we can easily use them in our tests!
+This will let us use `syncano` package to connect to the Syncano Dashboard, create a test Instance, and feed it with data.
+As we use the API in Syncano for all the operations and we have a javascript libraries we can easily use them in our tests!
 
 Overlay plan how our tool will work is:
 
-- Connect to syncano account
-- Create test instance in our account
-- Create test script in our instance
-- Save our test instance information in js file
-- Use our tool in test
+- Connect to Syncano account
+- Create test Instance in our account
+- Create test script in our Instance
+- Save our test Instance information in a js file
+- Use our tool in the tests
 - Do a cleanup on our account after tests
 
-Let's get to the work, start by creating new folder named `scripts`, we will add all files there to keep repo organized.
+Let's get to work! We'll start by creating a new folder named `scripts`, we will add all the files there to keep the repo organized.
 
 First I'll show you how to create a simple connection script to `syncano` account, this will enable us to later feed our account with data.
-Let's create file named `createConnection.js` and paste this into it:
+Let's create file named `createConnection.js` and paste here this code:
 
 ```javascript
 import Syncano from 'syncano';
@@ -76,15 +76,14 @@ const createConnection = () => {
 export default createConnection;
 ```
 
-Right now we have function that will connect us with Syncano, get connection object and return it.
-Also we are using our exported `NIGHTWATCH_EMAIL` and `NIGHTWATCH_PASSWORD`, this way our tool will connect to your account.
-In our code we simply use `Syncano` javascript library to connect to our account, and return connection object, that we assign to `user` variable.
+Right now we have a function that will connect us with Syncano, get connection object and return it.
+Also we are using our exported `NIGHTWATCH_EMAIL` and `NIGHTWATCH_PASSWORD`, this way the script will connect to your account (explanation of how the export work is in [part one](https://www.syncano.io/blog/testing-syncano/) of these series). In our code, we simply use `Syncano` javascript library to connect to our account, and return connection object, that we assign to the `user` variable.
 
 > I won't focus too much on explaining javascript and our Syncano library if you need more info check them at [docs](http://docs.syncano.io/v0.1.1/docs/).
 
 But we need to use it, so now we will create main point of whole `test data creation` script.
-So next step is to create `createTestData.js` file in `scripts` folder.
-This will be our main script that will call other javascript file and execute them.
+So next step is to create a `createTestData.js` file in the `scripts` folder.
+This will be our main script that will call other javascript files and execute them.
 Let's source our newly created connection in it.
 
 ```javascript
@@ -95,10 +94,10 @@ createConnection()
   .catch((error) => console.log(error));
 ```
 
-We just have sourced our script! Now if we run in in console using `babel-node scripts/createTestData.js` we should get really big output, that's our connection object.
-Neat! But we need to expand our script. So our next step will be creating test instance, don't worry, we will delete it at the end of tests!
+We've just sourced our script! Now if we run it in the terminal using `babel-node scripts/createTestData.js` we should get really big output. That's the connection object.
+Neat! But we need to expand our script. So, our next step will be creating a test Instance. Don't worry, we will delete it at the end of tests, so that it won't mess up your account!
 
-So let's create another file `createInstances.js` and add this to it:
+Let's create another file `createInstances.js` with this code in it:
 
 ```javascript
 const createInstance = (user) => {
@@ -121,11 +120,11 @@ const createInstance = (user) => {
 export default createInstance;
 ```
 
-Similar to our connection we now what to create test instance using our connection.
-As you may see we don't import `Syncano` library here, just pass our user that have connection object.
-After script succeeds we assign our instance name to `user.instanceName`, and set it as current instance (needed for next script).
+Since we are connected with the Syncano API using the Syncano JS lib, we can now start creating test data.
+As you may see we don't import `Syncano` library here, just pass our user that has the connection object.
+After script succeeds we assign our instance name to `user.instanceName`, and set it as the current instance (needed for next script).
 
-Now we need to modify our `createTestData.js` file, let's do this by changing it to:
+Now we need to modify our `createTestData.js` file. Let's do this by changing it to:
 
 ```javascript
 import createConnection from './createConnection';
@@ -144,11 +143,11 @@ We have imported our `createInstance` file, chained it with createConnection and
 
 > We also added delete user.connection to cut out connection object in final output, as it is not useful for us anymore.
 
-Right now we have our test instance create, now we can play with it by adding more items.
+Ok, we have our test Instance created. Now it's time to add more data items that'll be needed in further tests.
 I'll show you how to add a `script`, we will later use it to create e2e test in `nightwatch` by creating script endpoint.
-Our script name will be displayed in dropdown.
+Our script name will be displayed in a dropdown.
 
-But first things first, let's create file named `createScript.js` and appending it with this:
+But first things first, let's create a file named `createScript.js` and append it with this code:
 
 ```javascript
 const createScript = (user) => {
@@ -172,8 +171,8 @@ const createScript = (user) => {
 export default createScript;
 ```
 
-Now that we have a way to create Script. Neat! We are almost done with data creation!
-As before we append user with `scriptName`. This way we will be able to save it later to file.
+Now we have a way to create a Script. Neat! We are almost done with the data creation!
+As before we append user with `scriptName`. This way we will be able to save it later to a file.
 
 It's time to modify `createTestData.js` once more.
 Just replace it with:
@@ -193,9 +192,9 @@ createConnection()
   .catch((error) => console.log('Global error:\n', error));
 ```
 
-Similar way we just chaining `createScript` after `createInstance`.
-Great! We have created simple tool to connect to our account, create test instance and script.
-Now we can start testing... but wait we are missing two very important things, we should somehow export our `instanceName` and `scriptName`, and do some cleanup!
+As before, we just chaining `createScript` method after `createInstance`.
+Great! We have created simple tool to connect to our account, create test `Instance` and test `script`.
+Now we can start testing... but wait we are missing two very important things. We should somehow save our `instanceName` and `scriptName` so that Nightwatch tests can use them. We should also do some cleanup after the tests are finished!
 
 Right now we need to export our variables to file, so create `saveVariables.js` file in `scripts` folder. Append it with:
 
@@ -213,7 +212,7 @@ const saveVariables = (data) => {
 
 export default saveVariables;
 ```
-By simply converting our object to JSON and doint a small trick in `'export default ' + json + ';'` we create javascript that can be easily imported in our tests!
+By simply converting our object to JSON and doing a small trick in `'export default ' + json + ';'` we create a javascript file that can be easily imported in our tests!
 Now we also need to append `createTestData.js` file with newly created `saveVariables.js` file:
 
 ```javascript
@@ -233,10 +232,10 @@ createConnection()
   .catch((error) => console.log('Global error:\n', error));
 ```
 
-Now we have saved our test data in file! We will use that file in a tests to get names of instance and script.
+Now we have saved our test data in a file! We will use that file in our tests to get the `script` and `Instance` names.
 
-We are missing only a cleanup routine. So let's create a script that will delete our instance after we test on it.
-We gonna reuse `createInstancje.js` file and create a new one with just small modifications, naming it `deleteInstancje.js`;
+We are only missing a cleanup routine. So let's create a script that will delete our `Instance` after we've used it to run our tests.
+We're gonna reuse `createInstancje.js` file and create a new one with just small modifications, naming it `deleteInstancje.js`;
 
 ```javascript
 const deleteInstance = (user, instanceName) => {
@@ -265,10 +264,10 @@ createConnection()
   .catch((error) => console.error('Cleanup error:\n', error.message));
 ```
 
-We created it with similar fashion like `createTestData.js`.
-To execute it just type in console `babel-node scripts/cleanUp.js`.
+We created it in a  similar fashion as `createTestData.js`.
+To execute it, just type `babel-node scripts/cleanUp.js` in the terminal.
 
-Everything is setup! Now we only need to write our tests in nightwatch to see how our tool works with it.
+Everything is set up! Now we only need to write our tests in nightwatch to see how our tool works with it.
 
 So let's get to the work! :mans_shoe:
 
@@ -278,9 +277,9 @@ So let's get to the work! :mans_shoe:
 
 > I have also slightly altered nightwatch.json and package.json, so be sure to check it.
 
-Our tools creates for us testing instance, file with variables, but how we can use it? Lets consider a case, where we want to test our Script Endpoint socket in dashboard. They require that user created script (component) before creating Script Endpoint. How we can solve this issue? We could just create one more test case in our test suite for Script Endpoint. But... it won't be good idea in long run. We could easily duplicate code that way, create unnecessary more steps that take longer to execute, and we would have to do cleanup after each test suite.
+Our tool creates us a testing instance, file with variables, but how can we use it? Lets consider a case, where we want to test our Script Endpoint socket in the Dashboard. The tests require that the user has a `script` (component) before he can make a Script Endpoint. How we can solve this issue? We could just create one more test case in our test suite for Script Endpoint. But... it won't be good idea in the long run. We could easily duplicate code that way, create unnecessary more steps that take longer to execute, and we would have to do cleanup after each test suite.
 
-That's why we have created our tool, first create file `testScriptEndpoint.js` in tests folder, then this is how I'd used it in test:
+That's why we have created our tool, first create file `testScriptEndpoint.js` in the tests folder. This is how the test code should look like:
 
 ```javascript
 import tempInstance from '../tempInstance';
@@ -310,7 +309,7 @@ export default {
 }
 ```
 
-Most should be familiar for you, but let's take a look at this two lines of code:
+If you followed the previous parts, the code should be familiar to you. But let's take a closer look at this two lines of code:
 
 ```javascript
 import tempInstance from '../tempInstance';
@@ -320,12 +319,12 @@ import tempInstance from '../tempInstance';
 ```
 
 As you can see we have imported our `tempInstance.js` file that was generated using tool, there we have our scriptName.
-By referring to it by `tempInstance.scriptName` we can get it's value and use it in our test. Like see in snippet above.
-How cool is that? Now we don't need to create additional test cases before main test.
+By referring to it by `tempInstance.scriptName` we can get it's value and use it in our tests. Just like in the snippet above.
+How cool is that!? Now we don't need to create additional test cases before the main test.
 
-Thanks to that we have just created nightwatch test that will navigate to our `script-endpoints` page, fill required fields, with data, and then select from dropdown script that we created using our tool!
+Thanks to that we have just created nightwatch test that will navigate to our `script-endpoints` page, fill required fields with data, and then select a script that we created using our tool!
 
-But that's not all, we still need to write all selector for script-endpoint page. So let's create file named `scriptEndpointsPage.js` in our `tests` folder.
+But that's not all, we still need to write all selectors for script-endpoint page. So let's create file named `scriptEndpointsPage.js` in our `tests` folder.
 This is how I'd created it.
 
 ```javascript
@@ -368,10 +367,10 @@ url: `https://dashboard.syncano.io/#/instances/${tempInstance.instanceName}/scri
 [...]
 ```
 
-First line is same as in test, we simply `import` our file with data used for tests. As for second line, you will see that we are referring to `instanceName` from `tempInstance.js` file.
-Thanks to that our tests is universal, every time new test instance will be created, we don't need to change the url. Our navigate function used in tests will know where to go.
+First line is the same as in `scriptEndpointsPage.js` file. We simply `import` our file with data used for the tests. As for second line, you will see that we are referring to `instanceName` from `tempInstance.js` file.
+Thanks to that our tests are universal. Every time a new test instance is be created, we don't need to change the url. Our navigate function used in tests will know where to go.
 
-> You may also see that I have used different locators that are used in Part I and Part II, this is due to that we are rewriting some parts of dashboard to include data-e2e attribute to easily and without any issue target DOM objects on website while testing them. They are written in css selector, omitting type of tag that they are attached to. DOM can change easliy but with selectors like this we don't need to maintain test that much. But this whole concept is more for future parts.
+> You may also see that I have used different locators that are used in Part I and Part II. This is due to the fact, that we are rewriting some parts of the Dashboard to include data-e2e attributes. This helps us targeting DOM objects easily and without any issues while performing tests. Locators are written as css selectors, omitting type of tag that they are attached to. DOM can change easliy but with selectors like this we're spending less time on test maintenance. We'll discuss this approach in the future blog posts.
 
 So now we are ready to run tests using our tool and newly created tests.
 To do that, you could use every command one by one, but this way you can forget some of the steps.
@@ -392,7 +391,7 @@ Neat! We just created data driven test using our tool!
 
 In this article you've learned how to:
 
-- Create javascript tool for data driven testing
+- Create a javascript tool for data driven testing
 - Create nightwatch tests using that tool
 
 That's it for the third part of "Testing React apps with Nightwatch" series.
