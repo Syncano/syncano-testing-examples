@@ -1,0 +1,22 @@
+{
+  "name": "syncano-testing-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install",
+    "test": "nightwatch -t"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.11.4",
+    "babel-loader": "6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.9.0",
+    "nightwatch": "^0.9.5",
+    "selenium-standalone": "5.1.1",
+    "syncano": "1.0.23"
+  }
+}
