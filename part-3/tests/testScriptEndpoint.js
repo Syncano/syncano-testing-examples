@@ -7,6 +7,7 @@ export default {
     loginPage
       .navigate()
       .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+    client.pause(2000);
   },
   after: (client) => client.end(),
   'User adds Script Endpoint socket': (client) => {
@@ -17,7 +18,8 @@ export default {
       .navigate()
       .clickElement('@scriptEndpointZeroStateAddButton')
       .fillInput('@scriptEndpointModalNameInput', scriptEndpointName)
-      .selectDropdownValue('@scriptEndpointModalDropdown', tempInstance.scriptName)
+      .fillInput('@scriptEndpointModalDropdown', tempInstance.scriptName)
+      .clickElement('@scriptEndpointUserOption')
       .clickElement('@scriptEndpointModalNextButton')
       .clickElement('@scriptEndpointSummaryCloseButton')
       .waitForElementVisible('@scriptEndpointListItemRow');
