@@ -412,7 +412,7 @@ Instead, just copy this to your terminal:
 
 ```sh
 babel-node scripts/createTestData.js \
-  && npm test tests/testScriptEndpoint.js \
+  && npm test -t tests/testScriptEndpoint.js \
   && babel-node scripts/cleanUp.js
 ```
 

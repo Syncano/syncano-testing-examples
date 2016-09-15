@@ -25,7 +25,10 @@ Once you have a package.json file, while in the same directory, type `npm instal
 Next, in order to be able to run the tests, we need to download the Selenium standalone server. We could do this manually and take it from the projects’ website but lets use npm to handle this:
 
 - Type `npm install selenium-standalone --save-dev`
-- Modify your package.json file by adding a `scripts` property with `"e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"”` line. The package.json should look more or less like this:
+- Modify your package.json file by adding a `scripts` property with `"e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"”` and  `"test": "nightwatch"` lines.
+
+The package.json should look more or less like this:
+
 ```javascript
 {
   "name": "syncano-testing-examples",
@@ -33,7 +36,8 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"
+    "e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install",
+    "test": "nightwatch"
   },
   "author": "",
   "license": "ISC",
@@ -43,8 +47,8 @@ Next, in order to be able to run the tests, we need to download the Selenium sta
     "babel-loader": "6.2.4",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.9.0",
-    "nightwatch": "^0.9.5",
-    "selenium-standalone": "5.1.1"
+    "nightwatch": "0.9.8",
+    "selenium-standalone": "5.6.2"
   }
 }
 
@@ -67,12 +71,12 @@ Nightwatch relies on `nightwatch.json` as the configuration file for the test ru
 
   "selenium": {
     "start_process": true,
-    "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.0-server.jar",
+    "server_path": "./node_modules/selenium-standalone/.selenium/selenium-server/2.53.1-server.jar",
     "log_path": "./reports",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.21-x64-chromedriver"
+      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.23-x64-chromedriver"
     }
   },
   "test_settings": {
@@ -252,7 +256,9 @@ Now all the Nightwatch methods that require a timeout will have this global 10 s
 
 That's it! The only thing left to do is to run the test. In the terminal, go to your projects' root directory (where the nightwatch.json file is in) and run this command:
 
-`nightwatch`
+> Rembember to use npm run e2e-setup before starting tests. You only need to do it once.
+
+`npm test`
 
 With a bit of luck you should see a console output similar to this one:
 
