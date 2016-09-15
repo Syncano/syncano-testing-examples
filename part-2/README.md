@@ -70,7 +70,6 @@ case, where I'd want a user to login and then view his Instance details. This is
 how I'd structure such test:
 
 ```javascript
-
 export default {
   before(client) {
     const loginPage = client.page.loginPage();
@@ -101,6 +100,7 @@ So now the `before()` hook will take care of login steps and `after()` will clos
 the browser when all tests from this file are done. Simple, right? The only thing
 I need to do now is fill in the missing selectors. I'll add `@instancesTable` selector to the
 instancesPage, so that it looks like this:
+
 ```javascript
 export default {
   elements: {
@@ -113,7 +113,6 @@ export default {
     }
   }
 };
-
 ```
 
 Since it's a css selector, I don't have to pass the `locateStrategy` property
@@ -124,12 +123,14 @@ I'll also need to add `socketsPage.js` file in the `pages` folder and add these
 lines:
 
 instancesPage:
+
 ```javascript
 export default {
   elements: {
     instancesDropdown: {
       selector: '.instances-dropdown'
     }
+  }
 };
 ```
 
@@ -157,6 +158,7 @@ it in the root of the project and name it `commands`. Once it's done, you'll hav
 to tell nightwatch where the custom commands are. To do this:
 - open `nightwatch.json` file
 - edit the code in line 4 to look like this:
+
 ```javascript
 "custom_commands_path": "./commands",
 ```
@@ -173,6 +175,7 @@ abstract the logic around them into a custom command. The command will:
 In order to create this command:
 - add `clickListItemDropdown.js` file in the commands folder
 - paste this code in the `clickListItemDropdown.js` file:
+
 ```javascript
 // 'listItem' is the item name from the list. Corresponding dropdown menu will be clicked  
 // 'dropdoownChoice' can be part of the name of the dropdown option like "Edit" or "Delete"
@@ -261,10 +264,14 @@ instanceName: INSTANCE_NAME
 ```
 where the INSTANCE_NAME would be the name of your Syncano instance.
 
+
+> Rembember to use npm run e2e-setup before starting tests. You only need to do it once.
+
 Now, since everything is ready, you can run your tests. We want to run only a
 single test, so we'll run the suite like this:
+
 ```sh
-nightwatch -t tests/testInstances.js
+npm test -t tests/testInstances.js
 ```
 
 That's it for the second part of "Testing React apps with Nightwatch" series. In

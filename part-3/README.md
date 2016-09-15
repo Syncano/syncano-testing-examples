@@ -367,14 +367,16 @@ export default {
       selector: 'input[name="name"]'
     },
     scriptEndpointModalDropdown: {
-      selector: '//div[@class="script-dropdown"]/div/div',
-      locateStrategy: 'xpath'
+      selector: 'input[data-e2e="script-name"]'
+    },
+    scriptEndpointUserOption: {
+      selector: `[data-e2e=${tempInstance.scriptName}-user-option]`
     },
     scriptEndpointModalNextButton: {
-      selector: '[data-e2e="script-socket-submit-button"]'
+      selector: '[data-e2e="script-dialog-confirm-button"]'
     },
     scriptEndpointSummaryCloseButton: {
-      selector: '[data-e2e="script-socket-close-dialog"]'
+      selector: '[data-e2e="script-endpoint-summary-dialog-close-button"]'
     },
     scriptEndpointListItemRow: {
       selector: '[data-e2e="testscriptendpoint-script-socket-row"]'
@@ -412,7 +414,7 @@ Instead, just copy this to your terminal:
 
 ```sh
 babel-node scripts/createTestData.js \
-  && npm test tests/testScriptEndpoint.js \
+  && npm test -t tests/testScriptEndpoint.js \
   && babel-node scripts/cleanUp.js
 ```
 
