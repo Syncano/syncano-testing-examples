@@ -1,4 +1,4 @@
-### Testing React apps with Nightwatch - Data Driven Testing at Syncano
+# Testing React apps with Nightwatch - Data Driven Testing at Syncano
 
 This is the third part of the “End-to-End Testing of React Apps with Nightwatch” series.
 
@@ -11,7 +11,7 @@ In the [previous posts](https://www.syncano.io/blog/end-to-end-testing-of-react-
 - expand the functions of Nightwatch with custom commands
 
 
-In this part, I'll focus on creating tools for data-driven testing.
+## In this part, I'll focus on creating tools for data-driven testing.
 
 What is data-driven testing? Let's check Wikipedia for a definition of it.
 
@@ -37,7 +37,7 @@ I'll cover:
 
 >Finished code for this part of the Nightwatch tutorial series can be found in the **part-three** branch.
 
-#### Creating javascript tool for data driven testing
+## Creating javascript tool for data driven testing
 
 Before we start we'll need to modify `package.json` a bit by adding `syncano` as a dependency.
 
@@ -295,7 +295,7 @@ Everything is set up! Now we only need to write our tests in Nightwatch to see h
 
 So let's get to the work! :mans_shoe:
 
-### Using the JavaScript tool with Nightwatch tests
+## Using the JavaScript tool with Nightwatch tests
 
 > In this section, I'll use custom commands that we use on a daily basis to speed up the work and make the code easier to read. I won't explain how they are working. For more info on that, just check our [github repo](https://github.com/Syncano/syncano-testing-examples).
 
@@ -402,7 +402,7 @@ Thanks to that, our tests are universal. Every time a new test Instance is creat
 
 > You may also see that I have used different locators than the locators used in `Part 1` and `Part 2`. This is due to the fact that we are rewriting some parts of the Dashboard to include data-e2e attributes. This helps us target DOM objects easily and without any issues while performing tests. Locators are written as CSS selectors, omitting the type of tag that they are attached to. DOM can change easily, but with selectors like this we're spending less time on test maintenance. We'll discuss this approach in future blog posts.
 
-### Running the tests
+## Running the tests
 
 Now we are ready to run tests using our tool and our newly created tests.
 
@@ -422,7 +422,7 @@ Neat! We just created a data-driven test using our tool!
 
 > The way tests are started in the above code is not the best way. We could create a test runner in bash to give us more control over tests, since here only one of the tests will start. But that is information for a future topic in our Nightwatch series.
 
-### Summary
+## Summary
 
 In this article you've learned how to:
 
