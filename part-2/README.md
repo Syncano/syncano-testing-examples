@@ -3,8 +3,7 @@
 ### Testing React apps with Nightwatch - before(), after() hooks and custom commands
 
 This is the second part of End to End testing of React apps with Nightwatch series.
-In the (previous post)[https://www.syncano.io/blog/testing-syncano/]
-I've talked about Nightwatch:
+In the [previous post](https://www.syncano.io/blog/testing-syncano/) I've talked about Nightwatch:
 - installation
 - configuration of nightwatch.json and package.json files
 - adding ECMAS 6 to Nightwatch
@@ -17,11 +16,11 @@ I'll cover:
 
 
 This post builds upon the previous part of the series, which can be found here:
-(End to End testing of React apps with Nightwatch - Part 1)[https://www.syncano.io/blog/testing-syncano/]
+[End to End testing of React apps with Nightwatch - Part 1](https://www.syncano.io/blog/testing-syncano/)
 You don't have to go through the first part but we'll be basing on the code
-that was written there. The code can be found in (syncano-testing-examples)[https://github.com/Syncano/syncano-testing-examples/]
-on **part-one** branch. Finished code for this part of Nightwatch tutorial series
-can be found in **part-two** branch
+that was written there. The code can be found in [syncano-testing-examples](https://github.com/Syncano/syncano-testing-examples/)
+in **part-1** folder. Finished code for this part of Nightwatch tutorial series
+can be found in **part-2** folder.
 
 Since we moved all the technicalities out of the way, we can get to the good
 bits. Lets start with the before() and after() hooks in Nightwatch.
@@ -274,7 +273,6 @@ single test, so we'll run the suite like this:
 npm test -t tests/testInstances.js
 ```
 
-That's it for the second part of "Testing React apps with Nightwatch" series. In
-the next part I'll talk about xpath selectors and continuous integration setup.
+That's it for the second part of "Testing React apps with Nightwatch" series. Be sure to follow us for more parts to come!
 
 If you have any questions or just want to say hi, drop me a line at support@syncano.com

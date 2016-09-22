@@ -33,9 +33,9 @@ I'll cover:
 - using this tool with Nightwatch tests
 - running tests with our tool
 
->This post builds upon the previous part of the series, which can be found here: [End-to-End Testing of React Apps with Nightwatch - Part 2](https://www.syncano.io/blog/end-to-end-testing-of-react-apps-with-nightwatch-part-2/). You don't have to go through the first two parts, but I'll be building on the code that was written there. The code can be found in [syncano-testing-examples](https://github.com/Syncano/syncano-testing-examples/), on the **part-one** and **part-two** branches.
+>This post builds upon the previous part of the series, which can be found here: [End-to-End Testing of React Apps with Nightwatch - Part 2](https://www.syncano.io/blog/end-to-end-testing-of-react-apps-with-nightwatch-part-2/). You don't have to go through the first two parts, but I'll be building on the code that was written there. The code can be found in [syncano-testing-examples](https://github.com/Syncano/syncano-testing-examples/), inside of  **part-1** and **part-2** folders.
 
->Finished code for this part of the Nightwatch tutorial series can be found in the **part-three** branch.
+>Finished code for this part of the Nightwatch tutorial series can be found in **part-3** folder.
 
 ## Creating javascript tool for data driven testing
 
