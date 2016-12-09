@@ -2,8 +2,8 @@ import Syncano from 'syncano';
 
 const createConnection = () => {
   const credentials = {
-    email: process.env.NIGHTWATCH_EMAIL,
-    password: process.env.NIGHTWATCH_PASSWORD
+    email: process.env.EMAIL,
+    password: process.env.PASSWORD
   }
   const connection = Syncano()
 
