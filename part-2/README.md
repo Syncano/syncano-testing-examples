@@ -48,7 +48,7 @@ export default {
 
     loginPage
       .navigate()
-      .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+      .login(process.env.EMAIL, process.env.PASSWORD);
 
     instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.');
 
@@ -76,7 +76,7 @@ export default {
 
     loginPage
       .navigate()
-			.login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+			.login(process.env.EMAIL, process.env.PASSWORD);
 
 		instancesPage.waitForElementPresent('@instancesTable');
   },
@@ -138,8 +138,8 @@ That's it! The only thing you need to do now, is to export your email and passwo
 and type these lines:
 
 ```sh
-export $NIGHTWATCH_EMAIL=YOUR_SYNCANO_EMAIL
-export $NIGHTWATCH_PASSWORD=YOUR_SYNCANO_PASSWORD
+export EMAIL=YOUR_SYNCANO_EMAIL
+export PASSWORD=YOUR_SYNCANO_PASSWORD
 ```
 
 > If you don't want to use environment variables, you can pass your email
@@ -210,7 +210,7 @@ export default {
 
     loginPage
       .navigate()
-			.login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+			.login(process.env.EMAIL, process.env.PASSWORD);
 
 		instancesPage.waitForElementPresent('@instancesTable');
   },

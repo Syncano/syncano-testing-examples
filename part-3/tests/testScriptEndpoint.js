@@ -6,7 +6,7 @@ export default {
 
     loginPage
       .navigate()
-      .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+      .login(process.env.EMAIL, process.env.PASSWORD);
     client.pause(2000);
   },
   after: (client) => client.end(),

@@ -73,8 +73,8 @@ import Syncano from 'syncano';
 
 const createConnection = () => {
   const credentials = {
-    email: process.env.NIGHTWATCH_EMAIL,
-    password: process.env.NIGHTWATCH_PASSWORD
+    email: process.env.EMAIL,
+    password: process.env.PASSWORD
   }
   const connection = Syncano()
 
@@ -94,7 +94,7 @@ export default createConnection;
 
 Right now we have a function that will connect us with Syncano, get connection object, and return it.
 
-Also, we are using our exported `NIGHTWATCH_EMAIL` and `NIGHTWATCH_PASSWORD`; this way, the script will connect to your account (an explanation of how the export works is in [part one](https://www.syncano.io/blog/testing-syncano/) of this series). In our code, we simply use the `Syncano` JavaScript library to connect to our account, and return the connection object that we will assign to the `user` variable.
+Also, we are using our exported `EMAIL` and `PASSWORD`; this way, the script will connect to your account (an explanation of how the export works is in [part one](https://www.syncano.io/blog/testing-syncano/) of this series). In our code, we simply use the `Syncano` JavaScript library to connect to our account, and return the connection object that we will assign to the `user` variable.
 
 > I won't focus too much on explaining JavaScript and our Syncano library. If you need more info, check them out at [docs](http://docs.syncano.io/v0.1.1/docs/).
 
@@ -314,7 +314,7 @@ export default {
 
     loginPage
       .navigate()
-      .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+      .login(process.env.EMAIL, process.env.PASSWORD);
   },
   after: (client) => client.end(),
   'User adds Script Endpoint socket': (client) => {

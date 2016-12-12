@@ -25,7 +25,7 @@ Once you have a package.json file, while in the same directory, type `npm instal
 Next, in order to be able to run the tests, we need to download the Selenium standalone server. We could do this manually and take it from the projects’ website but lets use npm to handle this:
 
 - Type `npm install selenium-standalone --save-dev`
-- Modify your package.json file by adding a `scripts` property with `"e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install"”` and  `"test": "nightwatch"` lines.
+- Modify your package.json file by adding a `scripts` property with `"e2e-setup": "selenium-standalone install"` and  `"test": "nightwatch"` lines.
 
 The package.json should look more or less like this:
 
@@ -36,25 +36,25 @@ The package.json should look more or less like this:
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2e-setup": "node_modules/selenium-standalone/bin/selenium-standalone install",
+    "e2e-setup": "selenium-standalone install",
     "test": "nightwatch"
   },
   "author": "",
   "license": "ISC",
-	"devDependencies": {
-    "babel-cli": "^6.11.4",
-    "babel-core": "^6.11.4",
+  "devDependencies": {
+    "babel-cli": "6.11.4",
+    "babel-core": "6.11.4",
     "babel-loader": "6.2.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-es2015": "^6.9.0",
-    "nightwatch": "0.9.8",
-    "selenium-standalone": "5.6.2"
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-preset-es2015": "6.9.0",
+    "nightwatch": "0.9.9",
+    "selenium-standalone": "5.9.0"
   }
 }
 
 ```
 
-Now running `npm e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
+Now running `npm run e2e-setup` will download the latest version of selenium server and chromedriver (which will be needed for running tests in Chrome browser)
 
 #### Configuration
 
@@ -76,7 +76,7 @@ Nightwatch relies on `nightwatch.json` as the configuration file for the test ru
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
-      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.23-x64-chromedriver"
+      "webdriver.chrome.driver": "./node_modules/selenium-standalone/.selenium/chromedriver/2.25-x64-chromedriver"
     }
   },
   "test_settings": {

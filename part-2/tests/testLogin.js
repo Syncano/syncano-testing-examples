@@ -5,7 +5,7 @@ export default {
 
     loginPage
       .navigate()
-      .login(process.env.NIGHTWATCH_EMAIL, process.env.NIGHTWATCH_PASSWORD);
+      .login(process.env.EMAIL, process.env.PASSWORD);
 
     instancesPage.expect.element('@instancesListDescription').text.to.contain('Your first instance.');
 
